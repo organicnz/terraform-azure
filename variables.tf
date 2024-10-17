@@ -4,6 +4,8 @@ variable "subscription_id" {}
 variable "client_id" {}
 variable "client_secret" {}
 variable "tenant_id" {}
+variable "environment" {}
+variable "project_name" {}
 # variable "network" {}
 # variable "subnet" {}
 # variable "public_ip" {}
@@ -41,12 +43,12 @@ variable "tenant_id" {}
 
 variable "instance_name" {
   type    = string
-  default = "vpngermany"
+  default = "newvpngermany"
 }
 
 variable "azurerm_resource_group" {
   type    = string
-  default = "vpngermany_resource_group"
+  default = "newvpngermany_resource_group"
 }
 
 # locals {
@@ -63,49 +65,49 @@ variable "key_data" {
 variable "network" {
   description = "Name of the network"
   type        = string
-  default     = "vpngermany_network" # Provide a default value if necessary
+  default     = "newvpngermany_network" # Provide a default value if necessary
 }
 
 variable "subnet" {
   description = "Name of the subnet"
   type        = string
-  default     = "vpngermany_subnet" # Provide a default value if necessary
+  default     = "newvpngermany_subnet" # Provide a default value if necessary
 }
 
 variable "public_ip" {
   description = "Name of the public IP"
   type        = string
-  default     = "vpngermany_public_ip" # Provide a default value if necessary
+  default     = "newvpngermany_public_ip" # Provide a default value if necessary
 }
 
 variable "network_interface" {
   description = "Name of the network interface"
   type        = string
-  default     = "vpngermany_network_interface" # Provide a default value if necessary
+  default     = "newvpngermany_network_interface" # Provide a default value if necessary
 }
 
 variable "ip_configuration" {
   description = "Name of the IP configuration"
   type        = string
-  default     = "vpngermany_ip_configuration" # Provide a default value if necessary
+  default     = "newvpngermany_ip_configuration" # Provide a default value if necessary
 }
 
 variable "virtual_machine" {
   description = "Name of the virtual machine"
   type        = string
-  default     = "vpngermany_virtual_machine" # Provide a default value if necessary
+  default     = "newvpngermany_virtual_machine" # Provide a default value if necessary
 }
 
 variable "storage_os_disk" {
   description = "Name of the OS disk"
   type        = string
-  default     = "vpngermany_storage_os_disk" # Provide a default value if necessary
+  default     = "newvpngermany_storage_os_disk" # Provide a default value if necessary
 }
 
 variable "location" {
   description = "Location of the Azure resource group"
   type        = string
-  default     = "Germany West Central" # Provide a default value if necessary Germany West Central or UK South
+  default     = "Germany West Central" # Provide a default value if necessary: Germany West Central, UK South or West US
 }
 
 
@@ -122,4 +124,16 @@ variable "disk_size_gb" {
 variable "vm_size" {
   type        = string
   description = "The size of the virtual machine"
+}
+
+variable "resource_group_name_prefix" {
+  type        = string
+  description = "Prefix for resource group name"
+  default     = "newvpngermany"
+}
+
+variable "resource_prefix" {
+  type        = string
+  description = "Prefix for resource names"
+  default     = "newvpngermany"
 }

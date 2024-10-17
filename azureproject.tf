@@ -1,149 +1,161 @@
-# Create the resource group
-resource "null_resource" "create_resource_group" {
-  provisioner "local-exec" {
-    command = "az group create --name vpngermany-resource-group --location 'Germany West Central' --tags {tags}" //Location Germany West Central or UK South
-  }
-}
-
-# Create a service principal
-resource "null_resource" "create_service_principal" {
-  depends_on = [null_resource.create_resource_group]
-
-  provisioner "local-exec" {
-    command = "az ad sp create-for-rbac --name vpngermany_terraform_app --role Contributor --scopes /subscriptions/f8368c46-055d-4b25-b4d4-7410f92cb8bc/resourceGroups/vpngermany-resource-group"
-  }
-}
-
 # Create a resource group
-resource "azurerm_resource_group" "vpngermany" {
-  name     = var.azurerm_resource_group
+resource "azurerm_resource_group" "rg" {
+  name     = "${var.resource_prefix}-rg"
   location = var.location
 
-  # Disable destruction for the resource group
-  lifecycle {
-    prevent_destroy = false
+  tags = {
+    environment = "production"
+    project     = var.resource_prefix
   }
 }
 
 # Create a virtual network within the resource group
-resource "azurerm_virtual_network" "vpngermany" {
-  name                = var.network
-  resource_group_name = azurerm_resource_group.vpngermany.name
-  location            = azurerm_resource_group.vpngermany.location
+resource "azurerm_virtual_network" "vnet" {
+  name                = "${var.resource_prefix}-vnet"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
   address_space       = ["10.0.0.0/16"]
 
-  # Disable destruction for the virtual network
-  lifecycle {
-    prevent_destroy = false
+  tags = {
+    environment = "production"
+    project     = var.resource_prefix
   }
 }
 
 # Create a subnet
-resource "azurerm_subnet" "vpngermany" {
-  name                 = var.subnet
-  resource_group_name  = azurerm_resource_group.vpngermany.name
-  virtual_network_name = azurerm_virtual_network.vpngermany.name
+resource "azurerm_subnet" "subnet" {
+  name                 = "${var.resource_prefix}-subnet"
+  resource_group_name  = azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = ["10.0.1.0/24"]
-
-  # # Disable destruction for the public IP address
-  # lifecycle {
-  #   prevent_destroy = true
-  # }
 }
 
 # Create a public IP address
-resource "azurerm_public_ip" "vpngermany" {
-  name                = var.public_ip
-  location            = azurerm_resource_group.vpngermany.location
-  resource_group_name = azurerm_resource_group.vpngermany.name
+resource "azurerm_public_ip" "public_ip" {
+  name                = "${var.resource_prefix}-public-ip"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Static"
+  domain_name_label   = var.resource_prefix
 
-  # # Disable destruction for the public IP address
-  # lifecycle {
-  #   prevent_destroy = true
-  # }
+  tags = {
+    environment = "production"
+    project     = var.resource_prefix
+  }
 }
 
 # Create a network interface
-resource "azurerm_network_interface" "vpngermany-resource-group" {
-  name                = var.network_interface
-  location            = azurerm_resource_group.vpngermany.location
-  resource_group_name = azurerm_resource_group.vpngermany.name
+resource "azurerm_network_interface" "nic" {
+  name                = "${var.resource_prefix}-nic"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
 
   ip_configuration {
-    name                          = var.ip_configuration
-    subnet_id                     = azurerm_subnet.vpngermany.id
-    private_ip_address_allocation = "Static"
-    private_ip_address            = "10.0.1.4" # Specify the static private IP address
-    public_ip_address_id          = azurerm_public_ip.vpngermany.id
+    name                          = "${var.resource_prefix}-ipconfig"
+    subnet_id                     = azurerm_subnet.subnet.id
+    private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.public_ip.id
   }
 
-  # # Disable destruction for the network interface
-  # lifecycle {
-  #   prevent_destroy = true
-  # }
+  tags = {
+    environment = "production"
+    project     = var.resource_prefix
+  }
 }
 
-# # Create DNS | Has issues with networking
-# resource "azurerm_virtual_network_dns_servers" "vpngermany" {
-#   virtual_network_id = azurerm_virtual_network.vpngermany.id
-#   dns_servers        = ["10.7.7.2", "10.7.7.7", "10.7.7.1"]
-# }
+# Create a network security group
+resource "azurerm_network_security_group" "nsg" {
+  name                = "${var.resource_prefix}-nsg"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
 
-# resource "azurerm_dns_zone" "vpngermany" {
-#   name                = "vpngermany-foodshare.uksouth.cloudapp.azure.com"
-#   resource_group_name = azurerm_resource_group.vpngermany.name
-# }
+  security_rule {
+    name                       = "SSH"
+    priority                   = 1001
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "22"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
 
-# resource "azurerm_dns_a_record" "vpngermany" {
-#   name                = "vpngermany"
-#   zone_name           = azurerm_dns_zone.vpngermany.name
-#   resource_group_name = azurerm_resource_group.vpngermany.name
-#   ttl                 = 300
-#   records             = ["10.0.180.17"]
-# }
+  tags = {
+    environment = "production"
+    project     = var.resource_prefix
+  }
+}
+
+# Associate the NSG with the subnet
+resource "azurerm_subnet_network_security_group_association" "nsg_association" {
+  subnet_id                 = azurerm_subnet.subnet.id
+  network_security_group_id = azurerm_network_security_group.nsg.id
+}
 
 # Create a virtual machine
-resource "azurerm_virtual_machine" "vpngermany" {
-  name                  = var.virtual_machine
-  location              = azurerm_resource_group.vpngermany.location
-  resource_group_name   = azurerm_resource_group.vpngermany.name
-  vm_size               = var.vm_size # 4 cores, 16 GB RAM
-  network_interface_ids = [azurerm_network_interface.vpngermany-resource-group.id]
+resource "azurerm_linux_virtual_machine" "vm" {
+  name                  = var.instance_name
+  location              = azurerm_resource_group.rg.location
+  resource_group_name   = azurerm_resource_group.rg.name
+  network_interface_ids = [azurerm_network_interface.nic.id]
+  size                  = var.vm_size
 
-  storage_image_reference {
+  os_disk {
+    name                 = "${var.resource_prefix}-osdisk"
+    caching              = "ReadWrite"
+    storage_account_type = "Premium_LRS"
+    disk_size_gb         = var.disk_size_gb
+  }
+
+  source_image_reference {
     publisher = "Canonical"
-    offer     = "0001-com-ubuntu-server-jammy"
-    sku       = "22_04-lts-gen2"
+    offer     = "ubuntu-24_04-lts"
+    sku       = "server"
     version   = "latest"
   }
 
-  storage_os_disk {
-    name              = var.storage_os_disk
-    caching           = "ReadWrite"
-    create_option     = "FromImage"
-    managed_disk_type = "Premium_LRS"
-    disk_size_gb      = var.disk_size_gb
+  computer_name  = var.instance_name
+  admin_username = var.admin_username
+
+  admin_ssh_key {
+    username   = var.admin_username
+    public_key = var.key_data
   }
 
-  os_profile {
-    computer_name  = var.instance_name
-    admin_username = var.admin_username
-  }
+  provisioner "remote-exec" {
+    inline = [
+      "sudo apt update",
+      "sudo apt full-upgrade -y",
+      "sudo apt autoremove -y",
+      "sudo reboot"
+    ]
 
-  os_profile_linux_config {
-    disable_password_authentication = true
-
-    ssh_keys {
-      path     = "/home/organic/.ssh/authorized_keys"
-      key_data = var.key_data # Specify the path to your local public key file
+    connection {
+      type        = "ssh"
+      user        = var.admin_username
+      host        = azurerm_public_ip.public_ip.ip_address
+      private_key = file("~/.ssh/azure_id_rsa.pem")  # Ensure this key is not passphrase protected
     }
   }
 
-  # Disable destruction for the virtual machine
-  lifecycle {
-    prevent_destroy = false
+  tags = {
+    environment = "production"
+    project     = var.resource_prefix
   }
 }
 
+# Output the public IP address
+output "public_ip_address" {
+  value = azurerm_public_ip.public_ip.ip_address
+}
 
+# Output the VM name
+output "vm_name" {
+  value = azurerm_linux_virtual_machine.vm.name
+}
+
+# Output the resource group name
+output "resource_group_name" {
+  value = azurerm_resource_group.rg.name
+}

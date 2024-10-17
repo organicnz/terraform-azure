@@ -269,7 +269,21 @@ Note that only the public SSH key needs to be specified. This completes the prep
 
 ## Step 6: Verify the configuration
 
+To create secrets use
+```bash
+az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/<SUBSCRIPTION_ID>"
+```
+
+To create secrets use with a name
+```bash
+az ad sp create-for-rbac --name "newvpngermany_terraform_app" --role="Contributor" --scopes="/subscriptions/f8368c46-055d-4b25-b4d4-7410f92cb8bc"
+```
+
 This is done by the command:
+
+```bash
+terraform init
+```
 
 ```bash
 terraform validate
@@ -302,6 +316,9 @@ terraform destroy
 ```
 
 You will also need to confirm the operation by typing yes and hitting Enter to confirm the deletion.
+
+## Get new creds with a name 
+az ad sp create-for-rbac --name "newvpngermany_terraform_app" --role="Contributor" --scopes="/subscriptions/f8368c46-055d-4b25-b4d4-7410f92cb8bc"
 
 ## Conclusion
 

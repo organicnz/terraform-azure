@@ -11,7 +11,12 @@ terraform {
       version = "~> 2.0"
     }
   }
-
+  # backend "azurerm" {
+  #   resource_group_name  = "tfstate"
+  #   storage_account_name = "tfstatenewvpngermany"
+  #   container_name       = "tfstate"
+  #   key                  = "terraform.tfstate"
+  # }
   # required_plugins {
   #   azurerm = {
   #     source = "hashicorp/azurerm"
@@ -24,13 +29,11 @@ provider "azurerm" {
   skip_provider_registration = true
 
   // To create secrets use "az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/<SUBSCRIPTION_ID>""
-  // With name "az ad sp create-for-rbac --name "vpngermany_terraform_app" --role="Contributor" --scopes="/subscriptions/f8368c46-055d-4b25-b4d4-7410f92cb8bc""
-  subscription_id = "f8368c46-055d-4b25-b4d4-7410f92cb8bc"
-  client_id       = "f10e8212-05fc-4409-85ff-52bb23d6cf38"
-  client_secret   = "fST8Q~zzkCKoX2w0ZDuDeIh_-oHYR1lVEPUXvcw1"
-  tenant_id       = "f107b5bb-3869-4b6e-844e-d9cc0dcb36a0"
-
-  # subscription_id = "f8368c46-055d-4b25-b4d4-7410f92cb8bc"
+  // With a name "az ad sp create-for-rbac --name "newvpngermany_terraform_app" --role="Contributor" --scopes="/subscriptions/f8368c46-055d-4b25-b4d4-7410f92cb8bc""
+  subscription_id = var.subscription_id
+  client_id       = var.client_id
+  client_secret   = var.client_secret
+  tenant_id       = var.tenant_id
 
   features {
     key_vault {
