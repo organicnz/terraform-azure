@@ -1,17 +1,28 @@
 # variable "key_data" {}
 # variable "instance_name" {}
-variable "subscription_id" {}
-variable "client_id" {}
-variable "client_secret" {}
-variable "tenant_id" {}
-variable "environment" {
+variable "subscription_id" {
+  description = "Azure subscription ID (can be set with ARM_SUBSCRIPTION_ID env var)"
   type        = string
-  description = "Deployment environment (e.g., production, staging, development)"
+  default     = ""
 }
-variable "project_name" {
+variable "client_id" {
+  description = "Azure client ID (can be set with ARM_CLIENT_ID env var)"
   type        = string
-  description = "Name of the project"
+  default     = ""
 }
+variable "client_secret" {
+  description = "Azure client secret (can be set with ARM_CLIENT_SECRET env var)"
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+variable "tenant_id" {
+  description = "Azure tenant ID (can be set with ARM_TENANT_ID env var)"
+  type        = string
+  default     = ""
+}
+variable "environment" {}
+variable "project_name" {}
 # variable "network" {}
 # variable "subnet" {}
 # variable "public_ip" {}
@@ -48,8 +59,8 @@ variable "project_name" {
 
 
 variable "instance_name" {
-  type        = string
-  description = "Name of the VM instance"
+  type    = string
+  default = "vpn_service"
 }
 
 variable "azurerm_resource_group" {
@@ -62,7 +73,7 @@ variable "azurerm_resource_group" {
 # }
 
 variable "key_data" {
-  description = "SSH key data for VM authentication"
+  description = "SSH key data"
   type        = string
 }
 
@@ -113,7 +124,7 @@ variable "storage_os_disk" {
 variable "location" {
   description = "Location of the Azure resource group"
   type        = string
-  default     = "Germany West Central"
+  default     = "Germany West Central" # Provide a default value if necessary: Germany West Central, UK South or West US
 }
 
 
@@ -135,9 +146,11 @@ variable "vm_size" {
 variable "resource_group_name_prefix" {
   type        = string
   description = "Prefix for resource group name"
+  default     = "vpn_service"
 }
 
 variable "resource_prefix" {
   type        = string
   description = "Prefix for resource names"
+  default     = "vpn_service"
 }

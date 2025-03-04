@@ -63,35 +63,35 @@ resource "azurerm_network_interface" "nic" {
   }
 }
 
-# Create a network security group
-resource "azurerm_network_security_group" "nsg" {
-  name                = "${var.resource_prefix}-nsg"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
+# # Create a network security group
+# resource "azurerm_network_security_group" "nsg" {
+#   name                = "${var.resource_prefix}-nsg"
+#   location            = azurerm_resource_group.rg.location
+#   resource_group_name = azurerm_resource_group.rg.name
 
-  security_rule {
-    name                       = "SSH"
-    priority                   = 1001
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "22"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
+#   security_rule {
+#     name                       = "SSH"
+#     priority                   = 1001
+#     direction                  = "Inbound"
+#     access                     = "Allow"
+#     protocol                   = "Tcp"
+#     source_port_range          = "*"
+#     destination_port_range     = "22"
+#     source_address_prefix      = "*"
+#     destination_address_prefix = "*"
+#   }
 
-  tags = {
-    environment = "production"
-    project     = var.resource_prefix
-  }
-}
+#   tags = {
+#     environment = "production"
+#     project     = var.resource_prefix
+#   }
+# }
 
-# Associate the NSG with the subnet
-resource "azurerm_subnet_network_security_group_association" "nsg_association" {
-  subnet_id                 = azurerm_subnet.subnet.id
-  network_security_group_id = azurerm_network_security_group.nsg.id
-}
+# # Associate the NSG with the subnet
+# resource "azurerm_subnet_network_security_group_association" "nsg_association" {
+#   subnet_id                 = azurerm_subnet.subnet.id
+#   network_security_group_id = azurerm_network_security_group.nsg.id
+# }
 
 # Create a virtual machine
 resource "azurerm_linux_virtual_machine" "vm" {
@@ -109,10 +109,23 @@ resource "azurerm_linux_virtual_machine" "vm" {
   }
 
   source_image_reference {
+    # Ubuntu 24.04 LTS
     publisher = "Canonical"
     offer     = "ubuntu-24_04-lts"
     sku       = "server"
     version   = "latest"
+    
+    # Ubuntu 22.04 LTS
+    # publisher = "Canonical"
+    # offer     = "0001-com-ubuntu-server-jammy"
+    # sku       = "22_04-lts"
+    # version   = "latest"
+
+    # Debian 12 
+    # publisher = "Debian"
+    # offer     = "debian-12"
+    # sku       = "12"
+    # version   = "latest"
   }
 
   computer_name  = var.instance_name
@@ -123,21 +136,48 @@ resource "azurerm_linux_virtual_machine" "vm" {
     public_key = var.key_data
   }
 
-  provisioner "remote-exec" {
-    inline = [
-      "sudo apt update",
-      "sudo apt full-upgrade -y",
-      "sudo apt autoremove -y",
-      "sudo reboot"
-    ]
+  # provisioner "remote-exec" {
+  #   inline = [
+  #     "sudo apt update",
+  #     "sudo apt full-upgrade -y",
+  #     "sudo apt autoremove -y",
+  #     "apt-get install -y ufw",
+  #     "ufw default deny incoming",
+  #     "ufw default allow outgoing",
+  #     "ufw allow 22/tcp",
+  #     "ufw allow 80/tcp",
+  #     "ufw allow 443/tcp",
+  #     "ufw allow 2053/tcp",
+  #     "ufw allow 2053/udp",
+  #     "ufw --force enable",
+  #     "sudo reboot"
+  #   ]
 
-    connection {
-      type        = "ssh"
-      user        = var.admin_username
-      host        = azurerm_public_ip.public_ip.ip_address
-      private_key = file("~/.ssh/azure_id_rsa.pem")  # Ensure this key is not passphrase protected
-    }
-  }
+  #   connection {
+  #     type        = "ssh"
+  #     user        = var.admin_username
+  #     host        = azurerm_public_ip.public_ip.ip_address
+  #     private_key = file("~/.ssh/azure_id_rsa.pem")  # Ensure this key is not passphrase protected
+  #   }
+  # }
+
+  custom_data = base64encode(<<-EOF
+    #!/bin/bash
+    apt-get update
+    apt-get full-upgrade -y
+    apt-get autoremove -y
+    apt-get install -y ufw
+    ufw default deny incoming
+    ufw default allow outgoing
+    ufw allow 22/tcp
+    ufw allow 80/tcp
+    ufw allow 443/tcp
+    ufw allow 2053/tcp
+    ufw allow 2053/udp
+    ufw --force enable
+    reboot
+    EOF
+  )
 
   tags = {
     environment = "production"

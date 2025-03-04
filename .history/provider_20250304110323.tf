@@ -25,11 +25,16 @@ terraform {
 }
 
 provider "azurerm" {
+
   skip_provider_registration = true
-  
-  # Using Azure CLI authentication - this will use your logged-in credentials
-  # No need for explicit credential parameters
-  
+
+  // To create secrets use "az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/<SUBSCRIPTION_ID>""
+  // With a name "az ad sp create-for-rbac --name "vpn_service_terraform_app" --role="Contributor" --scopes="/subscriptions/f8368c46-055d-4b25-b4d4-7410f92cb8bc""
+  subscription_id = var.subscription_id
+  client_id       = var.client_id
+  client_secret   = var.client_secret
+  tenant_id       = var.tenant_id
+
   features {
     key_vault {
       recover_soft_deleted_key_vaults = false
@@ -38,6 +43,7 @@ provider "azurerm" {
 }
 
 provider "azuread" {}
+
 
 # Must be commented out. This is only for troubleshooting purposes. 
 # output "pub_key_value" {

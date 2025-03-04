@@ -1,17 +1,11 @@
-# variable "key_data" {}
-# variable "instance_name" {}
-variable "subscription_id" {}
-variable "client_id" {}
-variable "client_secret" {}
-variable "tenant_id" {}
-variable "environment" {
-  type        = string
-  description = "Deployment environment (e.g., production, staging, development)"
-}
-variable "project_name" {
-  type        = string
-  description = "Name of the project"
-}
+# Authentication variables are no longer needed with CLI authentication
+# variable "subscription_id" {}
+# variable "client_id" {}
+# variable "client_secret" {}
+# variable "tenant_id" {}
+
+variable "environment" {}
+variable "project_name" {}
 # variable "network" {}
 # variable "subnet" {}
 # variable "public_ip" {}
@@ -48,8 +42,8 @@ variable "project_name" {
 
 
 variable "instance_name" {
-  type        = string
-  description = "Name of the VM instance"
+  type    = string
+  default = "vpn_service"
 }
 
 variable "azurerm_resource_group" {
@@ -62,7 +56,7 @@ variable "azurerm_resource_group" {
 # }
 
 variable "key_data" {
-  description = "SSH key data for VM authentication"
+  description = "SSH key data"
   type        = string
 }
 
@@ -113,7 +107,7 @@ variable "storage_os_disk" {
 variable "location" {
   description = "Location of the Azure resource group"
   type        = string
-  default     = "Germany West Central"
+  default     = "Germany West Central" # Provide a default value if necessary: Germany West Central, UK South or West US
 }
 
 
@@ -135,9 +129,11 @@ variable "vm_size" {
 variable "resource_group_name_prefix" {
   type        = string
   description = "Prefix for resource group name"
+  default     = "vpn_service"
 }
 
 variable "resource_prefix" {
   type        = string
   description = "Prefix for resource names"
+  default     = "vpn_service"
 }

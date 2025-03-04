@@ -13,7 +13,7 @@ terraform {
   }
   # backend "azurerm" {
   #   resource_group_name  = "tfstate"
-  #   storage_account_name = "tfstatevpn_service"
+  #   storage_account_name = "tfstatexuigermany"
   #   container_name       = "tfstate"
   #   key                  = "terraform.tfstate"
   # }
@@ -27,8 +27,9 @@ terraform {
 provider "azurerm" {
   skip_provider_registration = true
   
-  # Using Azure CLI authentication - this will use your logged-in credentials
-  # No need for explicit credential parameters
+  # Using Azure CLI authentication - no need for explicit credentials
+  # This will use the account from 'az login'
+  use_cli = true
   
   features {
     key_vault {
@@ -37,7 +38,10 @@ provider "azurerm" {
   }
 }
 
-provider "azuread" {}
+provider "azuread" {
+  # Also using Azure CLI authentication
+  use_cli = true
+}
 
 # Must be commented out. This is only for troubleshooting purposes. 
 # output "pub_key_value" {

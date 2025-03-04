@@ -13,7 +13,7 @@ terraform {
   }
   # backend "azurerm" {
   #   resource_group_name  = "tfstate"
-  #   storage_account_name = "tfstatevpn_service"
+  #   storage_account_name = "tfstatexuigermany"
   #   container_name       = "tfstate"
   #   key                  = "terraform.tfstate"
   # }
@@ -26,10 +26,14 @@ terraform {
 
 provider "azurerm" {
   skip_provider_registration = true
-  
-  # Using Azure CLI authentication - this will use your logged-in credentials
-  # No need for explicit credential parameters
-  
+
+  # No need to specify these values as they will be read from environment variables:
+  # ARM_CLIENT_ID, ARM_CLIENT_SECRET, ARM_SUBSCRIPTION_ID, ARM_TENANT_ID
+  # subscription_id = var.subscription_id
+  # client_id       = var.client_id
+  # client_secret   = var.client_secret
+  # tenant_id       = var.tenant_id
+
   features {
     key_vault {
       recover_soft_deleted_key_vaults = false

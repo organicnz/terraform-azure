@@ -4,14 +4,8 @@ variable "subscription_id" {}
 variable "client_id" {}
 variable "client_secret" {}
 variable "tenant_id" {}
-variable "environment" {
-  type        = string
-  description = "Deployment environment (e.g., production, staging, development)"
-}
-variable "project_name" {
-  type        = string
-  description = "Name of the project"
-}
+variable "environment" {}
+variable "project_name" {}
 # variable "network" {}
 # variable "subnet" {}
 # variable "public_ip" {}
@@ -48,13 +42,13 @@ variable "project_name" {
 
 
 variable "instance_name" {
-  type        = string
-  description = "Name of the VM instance"
+  type    = string
+  default = "xuigermany"
 }
 
 variable "azurerm_resource_group" {
   type    = string
-  default = "vpn_service_resource_group"
+  default = "xuigermany_resource_group"
 }
 
 # locals {
@@ -62,7 +56,7 @@ variable "azurerm_resource_group" {
 # }
 
 variable "key_data" {
-  description = "SSH key data for VM authentication"
+  description = "SSH key data"
   type        = string
 }
 
@@ -71,49 +65,49 @@ variable "key_data" {
 variable "network" {
   description = "Name of the network"
   type        = string
-  default     = "vpn_service_network" # Provide a default value if necessary
+  default     = "xuigermany_network" # Provide a default value if necessary
 }
 
 variable "subnet" {
   description = "Name of the subnet"
   type        = string
-  default     = "vpn_service_subnet" # Provide a default value if necessary
+  default     = "xuigermany_subnet" # Provide a default value if necessary
 }
 
 variable "public_ip" {
   description = "Name of the public IP"
   type        = string
-  default     = "vpn_service_public_ip" # Provide a default value if necessary
+  default     = "xuigermany_public_ip" # Provide a default value if necessary
 }
 
 variable "network_interface" {
   description = "Name of the network interface"
   type        = string
-  default     = "vpn_service_network_interface" # Provide a default value if necessary
+  default     = "xuigermany_network_interface" # Provide a default value if necessary
 }
 
 variable "ip_configuration" {
   description = "Name of the IP configuration"
   type        = string
-  default     = "vpn_service_ip_configuration" # Provide a default value if necessary
+  default     = "xuigermany_ip_configuration" # Provide a default value if necessary
 }
 
 variable "virtual_machine" {
   description = "Name of the virtual machine"
   type        = string
-  default     = "vpn_service_virtual_machine" # Provide a default value if necessary
+  default     = "xuigermany_virtual_machine" # Provide a default value if necessary
 }
 
 variable "storage_os_disk" {
   description = "Name of the OS disk"
   type        = string
-  default     = "vpn_service_storage_os_disk" # Provide a default value if necessary
+  default     = "xuigermany_storage_os_disk" # Provide a default value if necessary
 }
 
 variable "location" {
   description = "Location of the Azure resource group"
   type        = string
-  default     = "Germany West Central"
+  default     = "Germany West Central" # Provide a default value if necessary: Germany West Central, UK South or West US
 }
 
 
@@ -135,9 +129,11 @@ variable "vm_size" {
 variable "resource_group_name_prefix" {
   type        = string
   description = "Prefix for resource group name"
+  default     = "xuigermany"
 }
 
 variable "resource_prefix" {
   type        = string
   description = "Prefix for resource names"
+  default     = "xuigermany"
 }
