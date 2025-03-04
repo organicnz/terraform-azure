@@ -1,3 +1,4 @@
+# Terraform files
 .terraform.lock.hcl
 .terraform.lock*
 .terraform*
@@ -5,3 +6,24 @@ terraform.tfstate
 terraform.tfstate.backup
 terraform.tfvars
 main.tfplan
+
+# IDE & Editor files
+.history/
+.vscode/
+.idea/
+.trunk/
+*.code-workspace
+
+# OS specific files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Sensitive files
+.env
+*.pem
+*.key
