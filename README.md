@@ -1,325 +1,364 @@
-# Azure infrastructure
----
+# Azure Infrastructure with Terraform
 
-## Getting started with Terraform
+This repository contains Terraform configurations for deploying and managing infrastructure in Microsoft Azure.
 
-> Detailed documentation on working with Terraform is available on our GitHub profile.
+## Table of Contents
 
-Terraform is a very handy tool for quickly creating and managing a cloud infrastructure using configuration files. When configuration files are changed, Terraform automatically reacts to this and issues the appropriate commands to add or remove the resources the administrator needs. This article explains how to use Terraform (also abbreviated TF) to create a virtual infrastructure in the Azure Cloud.
+- [Overview](#overview)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+  - [Installing Terraform on Linux](#installing-terraform-on-linux)
+  - [Installing Terraform on Windows](#installing-terraform-on-windows)
+  - [Installing Azure CLI](#installing-azure-cli)
+- [Azure Account Setup](#azure-account-setup)
+  - [Setting up Authentication](#setting-up-authentication)
+  - [Creating Service Principal](#creating-service-principal)
+- [Working with Terraform](#working-with-terraform)
+  - [Project Structure](#project-structure)
+  - [Provider Configuration](#provider-configuration)
+  - [Resource Configuration](#resource-configuration)
+  - [Using Variables](#using-variables)
+  - [SSH Key Configuration](#ssh-key-configuration)
+- [Workflow](#workflow)
+  - [Initialize](#initialize)
+  - [Validate](#validate)
+  - [Plan](#plan)
+  - [Apply](#apply)
+  - [Destroy](#destroy)
+- [Example Resources](#example-resources)
+  - [Resource Group](#resource-group)
+  - [Virtual Network & Subnet](#virtual-network--subnet)
+  - [Virtual Machine](#virtual-machine)
+- [Troubleshooting](#troubleshooting)
+- [Resources](#resources)
 
-## Step 1: Install Terraform
+## Overview
 
-We will tell you how to install TF on Linux and Windows.
+Terraform is an Infrastructure as Code (IaC) tool that allows you to define and provision cloud infrastructure using a declarative configuration language. When configuration files are changed, Terraform automatically determines the actions needed to achieve the desired state and executes them accordingly.
 
-### Installing Terraform on Linux using Ubuntu as an example
+This repository provides templates and instructions for using Terraform to create and manage resources in Microsoft Azure.
 
-First, use sudo to update the package list:
+## Prerequisites
+
+- An Azure subscription
+- Basic understanding of cloud infrastructure concepts
+- Command line/terminal experience
+
+## Installation
+
+### Installing Terraform on Linux
 
 ```bash
-apt update
-```
+# Update package list
+sudo apt update
 
-Then we install the packages we want and go to the folder where we want to install TF and download the right version of the package:
+# Install required packages
+sudo apt install -y wget unzip
 
-```bash
-apt install wget unzip
-```
+# Download Terraform (replace X.Y.Z with the latest version)
+wget https://releases.hashicorp.com/terraform/X.Y.Z/terraform_X.Y.Z_linux_amd64.zip
 
-```bash
-cd ~
-```
+# Extract the archive
+unzip terraform_X.Y.Z_linux_amd64.zip
 
-```bash
-wget https://releases.hashicorp.com/terraform/x.x.x/terraform_x.x.x_linux_amd64.zip
-```
+# Move to a directory in your PATH
+sudo mv terraform /usr/local/bin/
 
-In the last instruction, replace x.x.x.x with the current version number of the TF. You can view the current version here. Now unzip the archive and move it to the directory:
-
-```bash
-unzip terraform_x.x.x_linux_amd64.zip
-```
-
-```bash
-mv terraform /usr/local/bin/
-```
-
-That's it, all that's left is to verify that TF is installed and available:
-
-```bash
+# Verify installation
 terraform -v
 ```
 
-### Installing Terraform in Windows
+You can find the latest version of Terraform at [releases.hashicorp.com/terraform](https://releases.hashicorp.com/terraform/).
 
-The easiest thing to do here is to use the Chocolatey manager, which can be downloaded from here. To install Choco, open Powershell as administrator and run the following command:
+### Installing Terraform on Windows
 
-```bash
-Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-```
-
-Once Chocolatey has been installed, open a command line (this can be done from the Start menu, but must be as an administrator) and type
+Using Chocolatey (recommended):
 
 ```bash
+# Install Chocolatey (run in PowerShell as Administrator)
+Set-ExecutionPolicy Bypass -Scope Process -Force
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+
+# Install Terraform
 choco install terraform
-```
 
-Check the installation using the same instructions:
-
-```bash
+# Verify installation
 terraform -v
 ```
 
-## Step 1: Prepaire Azure account
+Alternatively, you can manually download and install Terraform from the [official website](https://www.terraform.io/downloads.html).
 
-### Set account
+### Installing Azure CLI
+
+The Azure CLI is required to interact with your Azure subscription:
+
 ```bash
-az account set -s f8368c46-055d-4b25-b4d4-7410f92cb8bc
+# For Linux (Ubuntu/Debian)
+curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+# For Windows (using PowerShell)
+Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi
+Start-Process msiexec.exe -Wait -ArgumentList '/I AzureCLI.msi /quiet'
 ```
 
-That's it. To add that you can download the latest version of Terraform from the developer's website, and for more detailed instructions on how to install Terraform on Linux and Windows, see here. You may also need a command line utility to manage the Azure Cloud infrastructure via Terraform. For that, we have the Azure Cloud CLI, whose documentation can be found here. And we'll get down to setting it up.
+## Azure Account Setup
 
-## Step 2: Create a .tf configuration file
+### Setting up Authentication
 
-Configuration files in Terraform have a .tf extension. They can be given any name, but the software will still be able to retrieve information from them. Now let's create a new directory (let's call it azure_project), and then add a configuration file there, e.g. twcproject.tf. To get a file with this extension, you can first create a plain text file and then change its extension to .tf. Also note that only one configuration file can be contained in one directory, otherwise configuration errors may occur.
-
-## Step 3: Configuring the provider
-
-Setting up the ISP via a configuration file is done as follows. Add the following lines to the beginning of our twcproject.tf file:
+Login to Azure CLI:
 
 ```bash
+az login
+```
+
+Set your subscription:
+
+```bash
+az account set -s <SUBSCRIPTION_ID>
+```
+
+### Creating Service Principal
+
+Create a service principal for Terraform to use:
+
+```bash
+# Create a service principal with Contributor role
+az ad sp create-for-rbac --name "terraform-sp-name" --role="Contributor" --scopes="/subscriptions/<SUBSCRIPTION_ID>"
+```
+
+The command will output JSON containing:
+- `appId` (maps to client_id)
+- `password` (maps to client_secret)
+- `tenant` (maps to tenant_id)
+
+Store these values securely for use in your Terraform configuration.
+
+## Working with Terraform
+
+### Project Structure
+
+A typical Terraform project structure:
+
+```
+terraform-azure/
+├── main.tf          # Main configuration file
+├── variables.tf     # Variable declarations
+├── terraform.tfvars # Variable values (gitignored)
+├── outputs.tf       # Output definitions
+└── README.md        # Documentation
+```
+
+### Provider Configuration
+
+Configure the Azure provider in your Terraform files:
+
+```hcl
 terraform {
   required_providers {
     azurerm = {
-      source = "hashicorp/azurerm"
-      version = "=3.0.1"
+      source  = "hashicorp/azurerm"
+      version = "~> 3.0"
     }
   }
 }
-```
 
-The source specifies the address of the provider (Azure Cloud in the example) and the version number of Terraform you can find out when downloading (we have specified the most recent version at the time of writing). Also note that only Terraform versions 0.13 and above are supported by the ISP.
-
-Now enter the following command in the configuration file folder, which will install the ISP
-
-```bash
-terraform init
-```
-
-You can proceed to the next step. If you have a problem with your ISP installation, you can always contact our support team directly on chat.
-
-## Step 4: Create and specify a token
-In order to be able to work with the installed provider we will need the API-token, which can be obtained in the API & Terraform section of the Azure Cloud panel (you must be logged in to access this section).
-
-Let's say we got the token fb246030216d5g30b1g6228e3071037g (this value here is only as an example, you will need to enter your token which will be generated for you). We add it via the provider:
-
-```bash
+# Configure the Microsoft Azure Provider
 provider "azurerm" {
   features {
     resource_group {
       prevent_deletion_if_contains_resources = false
     }
   }
-  skip_provider_registration = "true"
-
-  subscription_id = var.subscription_id
-  client_id       = var.client_id
-  client_secret   = var.client_secret
-  tenant_id       = var.tenant_id
+  # Use Azure CLI authentication or service principal
+  # If using service principal:
+  # subscription_id = var.subscription_id
+  # client_id       = var.client_id
+  # client_secret   = var.client_secret
+  # tenant_id       = var.tenant_id
 }
+```
 
-# Create a resource group
-resource "azurerm_resource_group" "web" {
-  name     = "azure-resource"
-  location = "Poland Central"
-}
+### Resource Configuration
 
-# Create a virtual network within the resource group
-resource "azurerm_virtual_network" "web" {
-  name                = "web-network"
-  resource_group_name = azurerm_resource_group.web.name
-  location            = azurerm_resource_group.web.location
-  address_space       = ["10.0.0.0/16"]
-}
+Define Azure resources using Terraform's declarative syntax:
 
-# Create a subnet
-resource "azurerm_subnet" "azure-resource" {
-  name                 = "web-subnet"
-  resource_group_name  = azurerm_resource_group.web.name
-  virtual_network_name = azurerm_virtual_network.web.name
-  address_prefixes     = ["10.0.1.0/24"]
-}
-
-# Create a public IP address
-resource "azurerm_public_ip" "azure-resource" {
-  name                = "web-public-ip"
-  location            = azurerm_resource_group.web.location
-  resource_group_name = azurerm_resource_group.web.name
-  allocation_method   = "Dynamic"
-}
-
-# Create a network interface
-resource "azurerm_network_interface" "azure-resource" {
-  name                = "web-network-interface"
-  location            = azurerm_resource_group.web.location
-  resource_group_name = azurerm_resource_group.web.name
-
-  ip_configuration {
-    name                          = "web-ip-configuration"
-    subnet_id                     = azurerm_subnet.azure-resource.id
-    private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.azure-resource.id
+```hcl
+# Example: Creating a resource group
+resource "azurerm_resource_group" "example" {
+  name     = "azure-resources"
+  location = "eastus"
+  tags = {
+    environment = "Development"
   }
 }
 ```
 
-You can now start preparing the configuration. In case you need to be able to delete servers, you need to disable the confirmation of their deletion via Telegram. How to do this is described in a special article.
+### Using Variables
 
-## Step 5: Prepare Configuration
+Define variables in `variables.tf`:
 
-Terraform enables you to manage various types of resources in your Azure Cloud. Let's take the example of creating a virtual machine (hereinafter referred to as VM) with a 100GB SSD, 2 cores, and 4GB RAM, use Ubuntu 20.04 as the operating system, and name our server something like my-azure-server (you can replace with your own name). To do this in the configuration file twcproject.tf we will write the following:
-
-```bash
-terraform {
-  required_providers {
-    azurerm = {
-      source = "hashicorp/azurerm"
-      version = "=3.0.1"
-    }
-  }
+```hcl
+variable "location" {
+  description = "The Azure region to deploy resources to"
+  type        = string
+  default     = "eastus"
 }
 
-# Configure the AzureRM Provider
-provider "azurerm" {
-  features {
-    resource_group {
-      prevent_deletion_if_contains_resources = false
-    }
-  }
-  skip_provider_registration = "true"
-
-  subscription_id = var.subscription_id
-  client_id       = var.client_id
-  client_secret   = var.client_secret
-  tenant_id       = var.tenant_id
+variable "instance_name" {
+  description = "Name for the VM instance"
+  type        = string
 }
 ```
 
-You will also need a password to proceed, this will be emailed to you as soon as the resource is created.
+Set values in `terraform.tfvars` (add to .gitignore for sensitive data):
 
-Important: if the VM has not been created, check if you have TWC_TOKEN installed according to the instructions above. It's also worth paying attention to the error displayed by Terraform: you can often tell from it why the VM has not been created. Alternatively, you can set up access via SSH keys. If you don't know how to generate SSH keys, use these instructions. To load an SSH key, add the following block to the twcproject.tf configuration file
-
-```bash
-data "twc_ssh_keys" "your-key" {
-  name = "Your key"
-  body = file("~/.ssh/your-key.pub")
-}
+```hcl
+location      = "eastus"
+instance_name = "azure-server"
 ```
 
-And in the resource block write the line ssh_keys_ids:
+### SSH Key Configuration
 
-```bash
-# Create a virtual machine
-resource "azurerm_virtual_machine" "azure-resource" {
-  name                  = "web-virtual-machine"
-  location              = azurerm_resource_group.web.location
-  resource_group_name   = azurerm_resource_group.web.name
-  vm_size               = "Standard_DS3_v2" # 4 cores, 14 GB RAM
-  network_interface_ids = [azurerm_network_interface.azure-resource.id]
+For VMs that use SSH authentication:
 
-  storage_image_reference {
-    publisher = "Canonical"
-    offer     = "0001-com-ubuntu-server-jammy"
-    sku       = "22_04-lts-gen2"
-    version   = "latest"
-  }
-
-  storage_os_disk {
-    name              = "web-os-disk"
-    caching           = "ReadWrite"
-    create_option     = "FromImage"
-    managed_disk_type = "Premium_LRS"
-  }
-
-  os_profile {
-    computer_name  = var.instance_name
-    admin_username = "organic"
-  }
-
-  os_profile_linux_config {
-    disable_password_authentication = true
-
-    ssh_keys {
-      path     = "/home/organic/.ssh/authorized_keys"
-      key_data = var.key_data  # Specify the path to your local public key file
-    }
-  }
-
-  # Add a data disk
-  storage_data_disk {
-    name              = "web-data-disk"
-    managed_disk_type = "Premium_LRS"
-    create_option     = "Empty"
-    disk_size_gb      = 100
-    lun               = 0
+```hcl
+# In your VM resource
+os_profile_linux_config {
+  disable_password_authentication = true
+  ssh_keys {
+    path     = "/home/username/.ssh/authorized_keys"
+    key_data = var.ssh_public_key
   }
 }
 ```
 
-Note that only the public SSH key needs to be specified. This completes the preparations, a couple of simple steps remain.
+## Workflow
 
-## Step 6: Verify the configuration
+### Initialize
 
-To create secrets use
-```bash
-az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/<SUBSCRIPTION_ID>"
-```
-
-To create secrets use with a name with the role Owner, Contributor, Reader
-```bash
-az ad sp create-for-rbac --name "vpn_service_terraform_app" --role="Owner" --scopes="/subscriptions/f8368c46-055d-4b25-b4d4-7410f92cb8bc"
-```
-
-This is done by the command:
+Initialize your Terraform working directory:
 
 ```bash
 terraform init
 ```
+
+This downloads providers and sets up the backend.
+
+### Validate
+
+Validate your configuration:
 
 ```bash
 terraform validate
 ```
 
-If the settings are correct, you will receive a message that the configuration is valid. If there is an error, check the settings again. All that's left now is to apply the configuration.
+### Plan
 
-## Step 7: Apply the configuration
-First, type in the following instructions:
+Preview the changes Terraform will make:
 
 ```bash
 terraform plan
 ```
 
-It does not apply the changes, but only displays a list of resources to check the settings. If errors are detected, Terraform will not only display a standby message, but will also indicate where the errors have occurred. If everything is OK, however, enter:
+Save the plan to a file for later use:
+
+```bash
+terraform plan -out=tfplan
+```
+
+### Apply
+
+Apply the changes to create/update infrastructure:
 
 ```bash
 terraform apply
 ```
 
-This instruction applies the configurations you have created, so that your resources are ready and can already be worked with. But to apply the changes you will need to confirm them first, so on the line:
+Or apply a saved plan:
 
-Enter a value:
-enter yes and press Enter.
+```bash
+terraform apply tfplan
+```
 
-You can now check the resources you have created via the control panel. If, for any reason, you want to remove them, you can do so with the following instructions:
+You'll need to confirm by typing `yes` unless you use the `-auto-approve` flag.
+
+### Destroy
+
+Remove all resources managed by Terraform:
 
 ```bash
 terraform destroy
 ```
 
-You will also need to confirm the operation by typing yes and hitting Enter to confirm the deletion.
+## Example Resources
 
-## Get new creds with a name 
-az ad sp create-for-rbac --name "vpn_service_terraform_app" --role="Contributor" --scopes="/subscriptions/f8368c46-055d-4b25-b4d4-7410f92cb8bc"
+### Resource Group
 
-## Conclusion
+```hcl
+resource "azurerm_resource_group" "main" {
+  name     = "azure-resources"
+  location = var.location
+}
+```
 
-So far we've learned how to create Terraform configuration files, configure the ISP, and add resources and configure them so that we can work with them on the Azure Cloud server. But if you want to learn more about Terraform's instructions, you can read about them in the official documentation.
+### Virtual Network & Subnet
+
+```hcl
+resource "azurerm_virtual_network" "main" {
+  name                = "azure-network"
+  address_space       = ["10.0.0.0/16"]
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+}
+
+resource "azurerm_subnet" "internal" {
+  name                 = "internal"
+  resource_group_name  = azurerm_resource_group.main.name
+  virtual_network_name = azurerm_virtual_network.main.name
+  address_prefixes     = ["10.0.2.0/24"]
+}
+```
+
+### Virtual Machine
+
+```hcl
+resource "azurerm_linux_virtual_machine" "main" {
+  name                = "azure-vm"
+  resource_group_name = azurerm_resource_group.main.name
+  location            = azurerm_resource_group.main.location
+  size                = "Standard_DS1_v2"
+  admin_username      = "adminuser"
+  network_interface_ids = [
+    azurerm_network_interface.main.id,
+  ]
+  admin_ssh_key {
+    username   = "adminuser"
+    public_key = var.ssh_public_key
+  }
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Premium_LRS"
+  }
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "0001-com-ubuntu-server-jammy"
+    sku       = "22_04-lts-gen2"
+    version   = "latest"
+  }
+}
+```
+
+## Troubleshooting
+
+- **Authentication Issues**: Verify your service principal has the correct permissions
+- **Naming Conventions**: Azure has specific naming rules for different resources
+- **Resource Locks**: Check for any locks preventing resource modifications
+- **Quota Limits**: Ensure your subscription has sufficient quota for the resources you're creating
+
+## Resources
+
+- [Terraform Documentation](https://www.terraform.io/docs/index.html)
+- [Azure Provider Documentation](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs)
+- [Azure CLI Documentation](https://docs.microsoft.com/en-us/cli/azure/)
+- [Azure Naming Conventions](https://docs.microsoft.com/en-us/azure/architecture/best-practices/naming-conventions)

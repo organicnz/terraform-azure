@@ -14,7 +14,7 @@ terraform {
   # Uncomment this block if you want to use remote state
   # backend "azurerm" {
   #   resource_group_name  = "tfstate"
-  #   storage_account_name = "tfstatevpn_service"
+  #   storage_account_name = "azure-tfstate-storage"
   #   container_name       = "tfstate"
   #   key                  = "terraform.tfstate"
   # }
