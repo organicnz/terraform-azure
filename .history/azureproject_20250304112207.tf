@@ -128,7 +128,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
     # version   = "latest"
   }
 
-  computer_name  = replace(var.instance_name, "_", "-")
+  computer_name  = var.instance_name
   admin_username = var.admin_username
 
   admin_ssh_key {

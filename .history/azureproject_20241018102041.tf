@@ -36,7 +36,7 @@ resource "azurerm_public_ip" "public_ip" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Static"
-  domain_name_label   = replace(var.resource_prefix, "_", "-")
+  domain_name_label   = var.resource_prefix
 
   tags = {
     environment = "production"
@@ -128,7 +128,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
     # version   = "latest"
   }
 
-  computer_name  = replace(var.instance_name, "_", "-")
+  computer_name  = var.instance_name
   admin_username = var.admin_username
 
   admin_ssh_key {
