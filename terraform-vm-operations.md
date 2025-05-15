@@ -1,96 +1,77 @@
-# Managing VM Operations with Terraform
+# Terraform Azure VM Operations
 
-Instead of using separate shell scripts, we can leverage Terraform's flexibility to manage the lifecycle of Azure resources, including shutting down VMs before destroying infrastructure.
+This document explains how to use Terraform for managing and destroying Azure infrastructure.
 
-## Shutting Down VMs with Terraform
+## Module Overview
 
-You can use Terraform variables and commands to control the shutdown process:
+The VM operations module provides infrastructure management capabilities for:
 
-1. Add this section to your `.tfvars` file when you want to shut down VMs before destroying:
+1. Shutting down VMs in a resource group
+2. Destroying specified resource groups
+
+## Pure Terraform Workflow
+
+### Infrastructure Destruction
+
+To destroy specific Azure resource groups, use the Terraform variables in your `terraform.tfvars` file:
 
 ```hcl
-# terraform.tfvars
+# Set to true to destroy all resource groups listed below
+destroy_infrastructure = true
+
+# List of resource groups to destroy
+target_resource_group_names = [
+  "vpswest_resource_group",
+  "newvps_resource_group",
+  "vpngermany_resource_group",
+  "xuigermany-rg",
+  "vpn_service-rg",
+  "THE_LATEST_RESOURCE_GROUP"
+]
+```
+
+Then run the standard Terraform apply command:
+
+```bash
+terraform apply
+```
+
+### Shutting Down VMs
+
+To shut down all VMs in your subscription:
+
+```hcl
+# Set to true to deallocate all VMs
 deallocate_vms = true
 ```
 
-2. Run the Terraform apply command to trigger the VM shutdown:
+Then run:
 
 ```bash
-terraform apply -var-file="terraform.tfvars"
+terraform apply
 ```
 
-3. After VMs are shut down, proceed with destroying infrastructure:
+## Command Line Override
+
+You can also override these settings from the command line without modifying your tfvars file:
+
+### To Destroy Infrastructure:
 
 ```bash
-terraform destroy
+terraform apply -var="destroy_infrastructure=true"
 ```
 
-## Advanced: Creating a VM Shutdown Module
+### To Shut Down VMs:
 
-For a more structured approach, you can create a Terraform module that handles VM shutdowns. Here's how:
-
-1. Create a `modules/vm-operations` directory structure
-2. In that directory, define the following files:
-
-**main.tf**:
-```hcl
-resource "null_resource" "deallocate_vms" {
-  count = var.deallocate_vms ? 1 : 0
-  
-  provisioner "local-exec" {
-    command = "az vm deallocate --ids $(az vm list --query '[].id' -o tsv)"
-  }
-}
+```bash
+terraform apply -var="deallocate_vms=true"
 ```
 
-**variables.tf**:
-```hcl
-variable "deallocate_vms" {
-  description = "Whether to deallocate all VMs"
-  type        = bool
-  default     = false
-}
-```
+## Important Notes
 
-**outputs.tf**:
-```hcl
-output "deallocate_completed" {
-  value = var.deallocate_vms ? "VMs deallocated" : "No action taken"
-}
-```
-
-3. Use the module in your main configuration:
-
-```hcl
-module "vm_operations" {
-  source = "./modules/vm-operations"
-  
-  deallocate_vms = var.deallocate_vms
-}
-```
-
-## Complete Terraform Workflow
-
-For a complete workflow to manage your infrastructure:
-
-1. **Initialize Terraform**:
-   ```bash
-   terraform init
-   ```
-
-2. **List all resources** that will be modified:
-   ```bash
-   terraform plan
-   ```
-
-3. **Shut down VMs**:
-   ```bash
-   terraform apply -var="deallocate_vms=true" -target=module.vm_operations
-   ```
-
-4. **Destroy infrastructure**:
-   ```bash
-   terraform destroy
-   ```
-
-This approach keeps everything within Terraform, making it more maintainable and integrated with your infrastructure as code. 
+- Resource group deletion occurs asynchronously in Azure
+- Monitor the Azure portal to confirm resources are fully deleted
+- The module uses Azure CLI commands via Terraform's local-exec provisioners
+- Ensure you're logged into the correct Azure account before running Terraform commands
+- This approach integrates infrastructure management directly into your Terraform workflow
+- No external scripts are required - everything is managed within Terraform 

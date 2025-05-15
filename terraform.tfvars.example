@@ -1,0 +1,33 @@
+# Example terraform.tfvars file
+# Copy to terraform.tfvars and modify as needed
+
+# Basic VM Configuration
+environment      = "production"
+project_name     = "azure-project"
+instance_name    = "azure-instance"
+key_data         = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD..."
+location         = "Germany West Central"
+admin_username   = "adminuser"
+disk_size_gb     = 1000
+vm_size          = "Standard_D8ds_v4"
+resource_prefix  = "azure"
+
+# Infrastructure Operations
+# Set to true to deallocate all VMs in your subscription
+deallocate_vms = false
+
+# Set to true to prepare for destruction
+prepare_destroy = false
+
+# Set to true to destroy the specific resource groups listed in target_resource_group_names
+destroy_infrastructure = false
+
+# Customize this list to target specific resource groups for destruction
+target_resource_group_names = [
+  "vpswest_resource_group",
+  "newvps_resource_group",
+  "vpngermany_resource_group",
+  "xuigermany-rg",
+  "vpn_service-rg",
+  "THE_LATEST_RESOURCE_GROUP"
+] 

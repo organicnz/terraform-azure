@@ -67,3 +67,29 @@ variable "deallocate_vms" {
   description = "Whether to deallocate (stop) all VMs as part of the Terraform execution"
   default     = false
 }
+
+variable "prepare_destroy" {
+  type        = bool
+  description = "Whether to prepare for infrastructure destruction"
+  default     = false
+}
+
+# Infrastructure Destruction Variables
+variable "destroy_infrastructure" {
+  type        = bool
+  description = "Set to true to destroy infrastructure using Terraform workflows"
+  default     = false
+}
+
+variable "target_resource_group_names" {
+  type        = list(string)
+  description = "List of resource group names to destroy when destroy_infrastructure is true"
+  default     = [
+    "vpswest_resource_group",
+    "newvps_resource_group",
+    "vpngermany_resource_group",
+    "xuigermany-rg",
+    "vpn_service-rg",
+    "THE_LATEST_RESOURCE_GROUP"
+  ]
+}
