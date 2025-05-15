@@ -31,6 +31,11 @@ This repository contains Terraform configurations for deploying and managing inf
   - [Virtual Machine](#virtual-machine)
 - [Troubleshooting](#troubleshooting)
 - [Resources](#resources)
+- [Importing and Managing Existing Azure Infrastructure](#importing-and-managing-existing-azure-infrastructure)
+  - [Prerequisites](#prerequisites)
+  - [Importing Existing Azure Resources](#importing-existing-azure-resources)
+  - [Destroying Azure Infrastructure](#destroying-azure-infrastructure)
+  - [Cleaning Up Terraform State](#cleaning-up-terraform-state)
 
 ## Overview
 
@@ -362,3 +367,51 @@ resource "azurerm_linux_virtual_machine" "main" {
 - [Azure Provider Documentation](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs)
 - [Azure CLI Documentation](https://docs.microsoft.com/en-us/cli/azure/)
 - [Azure Naming Conventions](https://docs.microsoft.com/en-us/azure/architecture/best-practices/naming-conventions)
+
+## Importing and Managing Existing Azure Infrastructure
+
+This repository includes scripts for importing your existing Azure resources into Terraform state, making it possible to manage your entire infrastructure through Terraform.
+
+### Prerequisites
+
+- Make sure you have the Azure CLI installed and are logged in
+- Terraform installed and initialized in this directory
+
+### Importing Existing Azure Resources
+
+1. First, make sure you've logged into Azure:
+
+```bash
+az login
+```
+
+2. Run the import script to bring your existing Azure resources under Terraform management:
+
+```bash
+./import_azure_resources.sh
+```
+
+This script will:
+- Import various resource groups
+- Import virtual networks, public IPs, network interfaces, and more 
+- Add all resources to your Terraform state
+
+### Destroying Azure Infrastructure
+
+If you need to completely tear down your infrastructure, use the destroy script:
+
+```bash
+./destroy_infrastructure.sh
+```
+
+**WARNING**: This will permanently delete all Azure resources managed by Terraform. Make sure you have proper backups before proceeding.
+
+### Cleaning Up Terraform State
+
+To clean up local Terraform files and state without affecting your Azure resources:
+
+```bash
+./cleanup.sh
+```
+
+This is useful when you want to start fresh with your Terraform configuration locally.

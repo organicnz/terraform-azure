@@ -60,3 +60,10 @@ variable "resource_prefix" {
   type        = string
   description = "Prefix for resource names"
 }
+
+# VM Operations
+variable "deallocate_vms" {
+  type        = bool
+  description = "Whether to deallocate (stop) all VMs as part of the Terraform execution"
+  default     = false
+}
