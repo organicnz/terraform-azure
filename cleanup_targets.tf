@@ -4,21 +4,33 @@
 locals {
   # List of resource groups that are targets for deletion
   target_resource_groups = [
-    # Add resource groups you want to target for deletion here
-    # Example: "resource-group-name"
+    # Original targets
+    "vpswest-resource-group",
+    "newvps-resource-group",
+    "vpngermany-resource-group",
+    "THE_LATEST_RESOURCE_GROUP",
+    "vpsgermany-rg",
+    "azure-rg",
+    
+    # Additional resource groups for complete cleanup
+    "foodshare-resource-group",
+    "FOODSHARE-RESOURCE-GROUP",
+    "web-resource-group",
+    "WEB-RESOURCE-GROUP",
+    "monitoring-resource-group-west-us",
+    "monitoring_resource_group",
+    "monitoring_resource_group-westus",
+    "ResourceMoverRG-uksouth-westus-eus2",
+    "azureapp-auto-alerts-432dd4-tamerlanium_gmail_com",
+    "azureapp-auto-alerts-a866fe-tamerlanium_gmail_com",
+    "DefaultResourceGroup-EUS"
   ]
 
   # Resource groups to exclude from deletion (critical infrastructure)
   exclude_resource_groups = [
     "cloud-shell-storage-westeurope",
-    "NetworkWatcherRG",
-    "monitoring-resource-group-west-us",
-    "monitoring_resource_group-westus",
-    "monitoring_resource_group",
-    "azure-rg",
-    "foodshare-resource-group",
-    "web-resource-group",
-    "AzureBackupRG_polandcentral_1"
+    "NetworkWatcherRG"
+    # Only keeping essential system resource groups
   ]
 }
 

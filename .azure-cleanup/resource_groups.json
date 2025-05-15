@@ -1,0 +1,22 @@
+[
+  {
+    "Location": "westeurope",
+    "Name": "cloud-shell-storage-westeurope",
+    "Status": "Succeeded"
+  },
+  {
+    "Location": "polandcentral",
+    "Name": "NetworkWatcherRG",
+    "Status": "Succeeded"
+  },
+  {
+    "Location": "polandcentral",
+    "Name": "web-resource-group",
+    "Status": "Succeeded"
+  },
+  {
+    "Location": "polandcentral",
+    "Name": "AzureBackupRG_polandcentral_1",
+    "Status": "Succeeded"
+  }
+]

@@ -1,0 +1,90 @@
+2025-05-14 20:16:42 - Step 1: Removing resource locks...
+2025-05-14 20:16:42 - No locks found.
+2025-05-14 20:16:42 - Step 2: Cleaning up Recovery Services vaults...
+2025-05-14 20:16:42 - Checking for Recovery Services vaults in resource group: foodshare-resource-group
+2025-05-14 20:16:43 - Checking for Recovery Services vaults in resource group: FOODSHARE-RESOURCE-GROUP
+2025-05-14 20:16:43 - Checking for Recovery Services vaults in resource group: web-resource-group
+2025-05-14 20:16:44 - Found Recovery Services vault: vault473 in resource group: web-resource-group
+2025-05-14 20:16:44 - Disabling soft delete for vault: vault473
+2025-05-14 20:16:49 - Processing container: IaasVMContainer;iaasvmcontainerv2;FOODSHARE-RESOURCE-GROUP;foodshare-virtual-machine
+2025-05-14 20:16:51 - Disabling protection for item: VM;iaasvmcontainerv2;FOODSHARE-RESOURCE-GROUP;foodshare-virtual-machine
+2025-05-14 20:16:54 - Failed to disable protection for item: VM;iaasvmcontainerv2;FOODSHARE-RESOURCE-GROUP;foodshare-virtual-machine
+2025-05-14 20:17:24 - Disabling protection for item: VM;iaasvmcontainerv2;web-resource-group;web-virtual-machine
+2025-05-14 20:17:26 - Failed to disable protection for item: VM;iaasvmcontainerv2;web-resource-group;web-virtual-machine
+2025-05-14 20:17:56 - Processing container: IaasVMContainer;iaasvmcontainerv2;web-resource-group;web-virtual-machine
+2025-05-14 20:17:57 - Disabling protection for item: VM;iaasvmcontainerv2;FOODSHARE-RESOURCE-GROUP;foodshare-virtual-machine
+2025-05-14 20:17:58 - Failed to disable protection for item: VM;iaasvmcontainerv2;FOODSHARE-RESOURCE-GROUP;foodshare-virtual-machine
+2025-05-14 20:18:28 - Disabling protection for item: VM;iaasvmcontainerv2;web-resource-group;web-virtual-machine
+2025-05-14 20:18:32 - Failed to disable protection for item: VM;iaasvmcontainerv2;web-resource-group;web-virtual-machine
+2025-05-14 20:19:02 - Attempting to delete vault: vault473
+2025-05-14 20:20:07 - Failed to delete vault: vault473
+2025-05-14 20:20:07 - Checking for Recovery Services vaults in resource group: WEB-RESOURCE-GROUP
+2025-05-14 20:20:08 - Found Recovery Services vault: vault473 in resource group: WEB-RESOURCE-GROUP
+2025-05-14 20:20:08 - Disabling soft delete for vault: vault473
+2025-05-14 20:20:13 - Processing container: IaasVMContainer;iaasvmcontainerv2;FOODSHARE-RESOURCE-GROUP;foodshare-virtual-machine
+2025-05-14 20:20:15 - Disabling protection for item: VM;iaasvmcontainerv2;FOODSHARE-RESOURCE-GROUP;foodshare-virtual-machine
+2025-05-14 20:20:18 - Failed to disable protection for item: VM;iaasvmcontainerv2;FOODSHARE-RESOURCE-GROUP;foodshare-virtual-machine
+2025-05-14 20:20:48 - Disabling protection for item: VM;iaasvmcontainerv2;web-resource-group;web-virtual-machine
+2025-05-14 20:20:50 - Failed to disable protection for item: VM;iaasvmcontainerv2;web-resource-group;web-virtual-machine
+2025-05-14 20:21:20 - Processing container: IaasVMContainer;iaasvmcontainerv2;web-resource-group;web-virtual-machine
+2025-05-14 20:21:21 - Disabling protection for item: VM;iaasvmcontainerv2;FOODSHARE-RESOURCE-GROUP;foodshare-virtual-machine
+2025-05-14 20:21:23 - Failed to disable protection for item: VM;iaasvmcontainerv2;FOODSHARE-RESOURCE-GROUP;foodshare-virtual-machine
+2025-05-14 20:21:53 - Disabling protection for item: VM;iaasvmcontainerv2;web-resource-group;web-virtual-machine
+2025-05-14 20:21:56 - Failed to disable protection for item: VM;iaasvmcontainerv2;web-resource-group;web-virtual-machine
+2025-05-14 20:22:26 - Attempting to delete vault: vault473
+2025-05-14 20:22:30 - Failed to delete vault: vault473
+2025-05-14 20:22:30 - Checking for Recovery Services vaults in resource group: monitoring-resource-group-west-us
+2025-05-14 20:22:31 - Checking for Recovery Services vaults in resource group: monitoring_resource_group
+2025-05-14 20:22:31 - Checking for Recovery Services vaults in resource group: monitoring_resource_group-westus
+2025-05-14 20:22:32 - Checking for Recovery Services vaults in resource group: ResourceMoverRG-uksouth-westus-eus2
+2025-05-14 20:22:32 - Checking for Recovery Services vaults in resource group: azureapp-auto-alerts-432dd4-tamerlanium_gmail_com
+2025-05-14 20:22:33 - Checking for Recovery Services vaults in resource group: azureapp-auto-alerts-a866fe-tamerlanium_gmail_com
+2025-05-14 20:22:33 - Checking for Recovery Services vaults in resource group: DefaultResourceGroup-EUS
+2025-05-14 20:22:34 - Checking for Recovery Services vaults in resource group: vpsgermany-rg
+2025-05-14 20:22:35 - Checking for Recovery Services vaults in resource group: azure-rg
+2025-05-14 20:22:35 - Checking for Recovery Services vaults in resource group: vpswest-resource-group
+2025-05-14 20:22:36 - Checking for Recovery Services vaults in resource group: newvps-resource-group
+2025-05-14 20:22:36 - Checking for Recovery Services vaults in resource group: vpngermany-resource-group
+2025-05-14 20:22:37 - Checking for Recovery Services vaults in resource group: THE_LATEST_RESOURCE_GROUP
+2025-05-14 20:22:37 - Checking for Recovery Services vaults in resource group: xuigermany-rg
+2025-05-14 20:22:38 - Checking for Recovery Services vaults in resource group: vpn_service-rg
+2025-05-14 20:22:38 - Step 3: Stopping all VMs...
+2025-05-14 20:22:51 - Waiting for VM deallocations to complete...
+2025-05-14 20:23:51 - Step 4: Deleting resource groups...
+2025-05-14 20:23:51 - Resource group not found: foodshare-resource-group
+2025-05-14 20:23:52 - Resource group not found: FOODSHARE-RESOURCE-GROUP
+2025-05-14 20:23:53 - Deleting resource group: web-resource-group
+2025-05-14 20:23:55 - Deleting resource group: WEB-RESOURCE-GROUP
+2025-05-14 20:23:57 - Resource group not found: monitoring-resource-group-west-us
+2025-05-14 20:23:57 - Resource group not found: monitoring_resource_group
+2025-05-14 20:23:58 - Resource group not found: monitoring_resource_group-westus
+2025-05-14 20:23:58 - Resource group not found: ResourceMoverRG-uksouth-westus-eus2
+2025-05-14 20:23:59 - Resource group not found: azureapp-auto-alerts-432dd4-tamerlanium_gmail_com
+2025-05-14 20:23:59 - Resource group not found: azureapp-auto-alerts-a866fe-tamerlanium_gmail_com
+2025-05-14 20:24:00 - Resource group not found: DefaultResourceGroup-EUS
+2025-05-14 20:24:01 - Resource group not found: vpsgermany-rg
+2025-05-14 20:24:02 - Resource group not found: azure-rg
+2025-05-14 20:24:02 - Resource group not found: vpswest-resource-group
+2025-05-14 20:24:03 - Resource group not found: newvps-resource-group
+2025-05-14 20:24:03 - Resource group not found: vpngermany-resource-group
+2025-05-14 20:24:04 - Resource group not found: THE_LATEST_RESOURCE_GROUP
+2025-05-14 20:24:04 - Resource group not found: xuigermany-rg
+2025-05-14 20:24:05 - Resource group not found: vpn_service-rg
+2025-05-14 20:24:05 - Step 5: Waiting for resource group deletions to complete...
+2025-05-14 20:24:06 - All resource group deletions completed!
+2025-05-14 20:24:06 - Step 6: Verifying remaining resource groups...
+2025-05-14 20:24:06 - Remaining resource groups:
+Name                            Status
+------------------------------  ---------
+cloud-shell-storage-westeurope  Succeeded
+NetworkWatcherRG                Succeeded
+web-resource-group              Deleting
+AzureBackupRG_polandcentral_1   Succeeded
+2025-05-14 20:24:06 - Step 7: Final verification of resource cleanup...
+2025-05-14 20:24:07 - Remaining resources (excluding NetworkWatcher and cloud-shell-storage):
+Name                                                       Location       CreatedTime                       ChangedTime                       ProvisioningState    ResourceGroup
+---------------------------------------------------------  -------------  --------------------------------  --------------------------------  -------------------  -----------------------------
+AzureBackup_web-virtual-machine_7971723185939630122        polandcentral  2023-07-16T18:30:50.825701+00:00  2023-07-16T18:40:51.413473+00:00  Succeeded            AzureBackupRG_polandcentral_1
+AzureBackup_foodshare-virtual-machine_7971723185351554625  polandcentral  2023-07-16T18:35:03.162409+00:00  2023-07-16T18:45:03.432841+00:00  Succeeded            AzureBackupRG_polandcentral_1
+vault473                                                   polandcentral  2023-07-16T18:28:35.005992+00:00  2023-07-16T18:38:35.520058+00:00  Succeeded            web-resource-group
+2025-05-14 20:24:07 - Cleanup process completed. Check the log file for details: azure_cleanup_20250514_201642.log

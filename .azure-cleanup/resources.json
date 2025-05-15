@@ -1,0 +1,62 @@
+[
+  {
+    "Location": "westeurope",
+    "Name": "csb10032001e82f7d91",
+    "ResourceGroup": "cloud-shell-storage-westeurope",
+    "Type": "Microsoft.Storage/storageAccounts"
+  },
+  {
+    "Location": "westus",
+    "Name": "NetworkWatcher_westus",
+    "ResourceGroup": "NetworkWatcherRG",
+    "Type": "Microsoft.Network/networkWatchers"
+  },
+  {
+    "Location": "polandcentral",
+    "Name": "AzureBackup_web-virtual-machine_7971723185939630122",
+    "ResourceGroup": "AzureBackupRG_polandcentral_1",
+    "Type": "Microsoft.Compute/restorePointCollections"
+  },
+  {
+    "Location": "polandcentral",
+    "Name": "AzureBackup_foodshare-virtual-machine_7971723185351554625",
+    "ResourceGroup": "AzureBackupRG_polandcentral_1",
+    "Type": "Microsoft.Compute/restorePointCollections"
+  },
+  {
+    "Location": "polandcentral",
+    "Name": "vault473",
+    "ResourceGroup": "web-resource-group",
+    "Type": "Microsoft.RecoveryServices/vaults"
+  },
+  {
+    "Location": "uksouth",
+    "Name": "NetworkWatcher_uksouth",
+    "ResourceGroup": "NetworkWatcherRG",
+    "Type": "Microsoft.Network/networkWatchers"
+  },
+  {
+    "Location": "germanywestcentral",
+    "Name": "NetworkWatcher_germanywestcentral",
+    "ResourceGroup": "NetworkWatcherRG",
+    "Type": "Microsoft.Network/networkWatchers"
+  },
+  {
+    "Location": "polandcentral",
+    "Name": "NetworkWatcher_polandcentral",
+    "ResourceGroup": "NetworkWatcherRG",
+    "Type": "Microsoft.Network/networkWatchers"
+  },
+  {
+    "Location": "westus2",
+    "Name": "NetworkWatcher_westus2",
+    "ResourceGroup": "NetworkWatcherRG",
+    "Type": "Microsoft.Network/networkWatchers"
+  },
+  {
+    "Location": "eastus",
+    "Name": "NetworkWatcher_eastus",
+    "ResourceGroup": "NetworkWatcherRG",
+    "Type": "Microsoft.Network/networkWatchers"
+  }
+]

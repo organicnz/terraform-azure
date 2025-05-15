@@ -4,6 +4,7 @@
 variable "environment" {
   type        = string
   description = "Deployment environment (e.g., production, staging, development)"
+  default     = "development"
 }
 
 variable "project_name" {
@@ -28,6 +29,7 @@ variable "instance_name" {
 variable "key_data" {
   description = "SSH key data for VM authentication"
   type        = string
+  sensitive   = true
 }
 
 variable "location" {
@@ -44,21 +46,25 @@ variable "admin_username" {
 variable "disk_size_gb" {
   type        = number
   description = "The size of the OS disk in GB"
+  default     = 30
 }
 
 variable "vm_size" {
   type        = string
   description = "The size of the virtual machine"
+  default     = "Standard_D2s_v3"
 }
 
 variable "resource_group_name_prefix" {
   type        = string
   description = "Prefix for resource group name"
+  default     = "terraform"
 }
 
 variable "resource_prefix" {
   type        = string
   description = "Prefix for resource names"
+  default     = "terraform"
 }
 
 # VM Operations
@@ -84,12 +90,43 @@ variable "destroy_infrastructure" {
 variable "target_resource_group_names" {
   type        = list(string)
   description = "List of resource group names to destroy when destroy_infrastructure is true"
-  default     = [
-    "vpswest_resource_group",
-    "newvps_resource_group",
-    "vpngermany_resource_group",
-    "xuigermany-rg",
-    "vpn_service-rg",
-    "THE_LATEST_RESOURCE_GROUP"
-  ]
+  default     = []
+}
+
+# Network settings
+variable "address_space" {
+  description = "VNet address space"
+  type        = string
+  default     = "10.0.0.0/16"
+}
+
+variable "subnet_prefix" {
+  description = "Subnet address prefix"
+  type        = string
+  default     = "10.0.1.0/24"
+}
+
+# Azure Cleanup Module Variables
+variable "scan_azure_resources" {
+  description = "Set to true to scan Azure resources in preparation for cleanup"
+  type        = bool
+  default     = false
+}
+
+variable "plan_azure_cleanup" {
+  description = "Set to true to create a cleanup plan for Azure resources"
+  type        = bool
+  default     = false
+}
+
+variable "execute_azure_cleanup" {
+  description = "Set to true to execute the Azure cleanup plan"
+  type        = bool
+  default     = false
+}
+
+variable "confirm_each_deletion" {
+  description = "Set to true to confirm each deletion step"
+  type        = bool
+  default     = true
 }
