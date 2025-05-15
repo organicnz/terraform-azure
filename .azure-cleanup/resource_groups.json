@@ -13,10 +13,5 @@
     "Location": "polandcentral",
     "Name": "web-resource-group",
     "Status": "Succeeded"
-  },
-  {
-    "Location": "polandcentral",
-    "Name": "AzureBackupRG_polandcentral_1",
-    "Status": "Succeeded"
   }
 ]
