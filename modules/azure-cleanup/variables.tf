@@ -28,4 +28,34 @@ variable "exclude_resource_groups" {
   description = "List of resource groups to exclude from deletion"
   type        = list(string)
   default     = ["NetworkWatcherRG", "cloud-shell-storage-westeurope", "AzureBackupRG_polandcentral_1"]
+}
+
+variable "target_resource_groups" {
+  description = "List of specific resource groups to target for cleanup (if empty, all non-excluded groups will be targeted)"
+  type        = list(string)
+  default     = []
+}
+
+variable "target_vault_name" {
+  description = "Specific Recovery Services vault to target for cleanup"
+  type        = string
+  default     = ""
+}
+
+variable "target_vault_resource_group" {
+  description = "Resource group containing the target Recovery Services vault"
+  type        = string
+  default     = ""
+}
+
+variable "aggressive_cleanup" {
+  description = "Set to true for more aggressive cleanup operations (force deletion)"
+  type        = bool
+  default     = false
+}
+
+variable "cancel_operations" {
+  description = "Set to true to attempt canceling pending Azure operations"
+  type        = bool
+  default     = false
 } 

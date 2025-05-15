@@ -11,7 +11,7 @@ locals {
     "THE_LATEST_RESOURCE_GROUP",
     "vpsgermany-rg",
     "azure-rg",
-    
+
     # Additional resource groups for complete cleanup
     "foodshare-resource-group",
     "FOODSHARE-RESOURCE-GROUP",
@@ -28,9 +28,10 @@ locals {
 
   # Resource groups to exclude from deletion (critical infrastructure)
   exclude_resource_groups = [
-    "cloud-shell-storage-westeurope",
-    "NetworkWatcherRG"
-    # Only keeping essential system resource groups
+    "NetworkWatcherRG",
+    "cloud-shell-storage-*",
+    "AzureBackupRG_*",
+    "DefaultResourceGroup-*"
   ]
 }
 
@@ -43,7 +44,7 @@ resource "null_resource" "destroy_resource_groups" {
   # This ensures the resource is always recreated when activated
   triggers = {
     resource_group_name = local.target_resource_groups[count.index]
-    timestamp = timestamp()
+    timestamp           = timestamp()
   }
 
   # Azure CLI command to delete the resource group

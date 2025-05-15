@@ -130,3 +130,34 @@ variable "confirm_each_deletion" {
   type        = bool
   default     = true
 }
+
+# Enhanced Azure Cleanup Options
+variable "target_cleanup_groups" {
+  description = "List of specific resource groups to target for cleanup"
+  type        = list(string)
+  default     = []
+}
+
+variable "target_vault_name" {
+  description = "Specific Recovery Services vault to target for cleanup"
+  type        = string
+  default     = ""
+}
+
+variable "target_vault_resource_group" {
+  description = "Resource group containing the target Recovery Services vault"
+  type        = string
+  default     = ""
+}
+
+variable "aggressive_cleanup" {
+  description = "Set to true for more aggressive cleanup operations (force deletion)"
+  type        = bool
+  default     = false
+}
+
+variable "cancel_operations" {
+  description = "Set to true to attempt canceling pending Azure operations"
+  type        = bool
+  default     = false
+}

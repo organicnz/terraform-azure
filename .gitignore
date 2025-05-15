@@ -27,3 +27,7 @@ Thumbs.db
 .env
 *.pem
 *.key
+
+# Logs and output files
+logs/
+*.log

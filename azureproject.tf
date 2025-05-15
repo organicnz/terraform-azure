@@ -114,7 +114,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
     offer     = "ubuntu-24_04-lts"
     sku       = "server"
     version   = "latest"
-    
+
     # Ubuntu 22.04 LTS
     # publisher = "Canonical"
     # offer     = "0001-com-ubuntu-server-jammy"

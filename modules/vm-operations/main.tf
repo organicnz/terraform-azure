@@ -3,7 +3,7 @@
 # Resource to stop/deallocate all VMs
 resource "null_resource" "deallocate_vms" {
   count = var.deallocate_vms ? 1 : 0
-  
+
   triggers = {
     # This ensures this resource is recreated when we want to deallocate VMs
     deallocate_trigger = var.deallocate_vms ? timestamp() : ""
@@ -34,7 +34,7 @@ resource "null_resource" "deallocate_vms" {
 # Resource to prepare for infrastructure destruction
 resource "null_resource" "prepare_destroy" {
   count = var.prepare_destroy ? 1 : 0
-  
+
   triggers = {
     # This ensures this resource is recreated when we want to prepare for destruction
     prepare_destroy_trigger = var.prepare_destroy ? timestamp() : ""
@@ -174,7 +174,7 @@ resource "null_resource" "remove_resource_locks" {
 # Destroy specific resource groups
 resource "null_resource" "destroy_resource_groups" {
   count = var.destroy_resource_groups ? 1 : 0
-  
+
   # This ensures lock removal and vault cleanup happens first
   depends_on = [
     null_resource.remove_resource_locks,

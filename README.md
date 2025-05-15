@@ -36,6 +36,11 @@ This repository contains Terraform configurations for deploying and managing inf
   - [Importing Existing Azure Resources](#importing-existing-azure-resources)
   - [Destroying Azure Infrastructure](#destroying-azure-infrastructure)
   - [Cleaning Up Terraform State](#cleaning-up-terraform-state)
+- [Azure Cleanup Module](#azure-cleanup-module)
+  - [Overview](#cleanup-overview)
+  - [Using the Cleanup Module](#using-the-cleanup-module)
+  - [Advanced Cleanup Options](#advanced-cleanup-options)
+  - [Example Usage](#example-usage)
 
 ## Overview
 
@@ -415,3 +420,122 @@ To clean up local Terraform files and state without affecting your Azure resourc
 ```
 
 This is useful when you want to start fresh with your Terraform configuration locally.
+
+## Azure Cleanup Module
+
+### Cleanup Overview
+
+The Azure Cleanup module provides a comprehensive solution for cleaning up Azure resources that are no longer needed. It integrates advanced cleanup techniques directly into your Terraform workflow, eliminating the need for separate scripts.
+
+Key features include:
+- Resource discovery and inventory
+- Cleanup planning with selective targeting
+- Aggressive resource deletion for stubborn resources
+- Special handling for Recovery Services vaults
+- Operation cancellation for stuck resources
+
+### Using the Cleanup Module
+
+The cleanup process is broken into three phases:
+
+1. **Discovery Phase**: Scans your Azure subscription and creates an inventory of resources
+2. **Planning Phase**: Creates a cleanup plan based on the discovered resources
+3. **Execution Phase**: Executes the cleanup plan with optional confirmation steps
+
+Basic usage:
+
+```hcl
+module "azure_cleanup" {
+  source = "./modules/azure-cleanup"
+
+  scan_resources       = true  # Discovery phase
+  plan_cleanup         = true  # Planning phase
+  execute_cleanup      = false # Set to true when ready to execute
+  
+  exclude_resource_groups = [
+    "NetworkWatcherRG",
+    "cloud-shell-storage-westeurope"
+  ]
+}
+```
+
+### Advanced Cleanup Options
+
+The module provides several advanced options for handling complex cleanup scenarios:
+
+#### Vault Cleanup
+
+Recovery Services vaults often prevent resource groups from being deleted. The module can target specific vaults:
+
+```hcl
+module "azure_cleanup" {
+  # ... basic configuration ...
+  
+  target_vault_name = "vault473"
+  target_vault_resource_group = "web-resource-group"
+}
+```
+
+#### Aggressive Resource Group Cleanup
+
+For stubborn resource groups that won't delete normally:
+
+```hcl
+module "azure_cleanup" {
+  # ... basic configuration ...
+  
+  target_resource_groups = ["problematic-resource-group"]
+  aggressive_cleanup = true
+}
+```
+
+#### Operation Cancellation
+
+To cancel pending operations that are preventing resources from being deleted:
+
+```hcl
+module "azure_cleanup" {
+  # ... basic configuration ...
+  
+  cancel_operations = true
+}
+```
+
+### Example Usage
+
+A complete example showing all options:
+
+```hcl
+module "azure_cleanup" {
+  source = "./modules/azure-cleanup"
+
+  # Basic options
+  scan_resources       = true
+  plan_cleanup         = true
+  execute_cleanup      = true
+  confirm_each_deletion = true  # Interactive mode
+  
+  # Resource groups to exclude from cleanup
+  exclude_resource_groups = [
+    "NetworkWatcherRG",
+    "cloud-shell-storage-westeurope",
+    "monitoring-resource-group-west-us"
+  ]
+  
+  # Target specific resource groups
+  target_resource_groups = [
+    "web-resource-group",
+    "test-resource-group"
+  ]
+  
+  # Target specific vault
+  target_vault_name = "vault473"
+  target_vault_resource_group = "web-resource-group"
+  
+  # Advanced options
+  aggressive_cleanup = true
+  cancel_operations = true
+}
+```
+
+For more details on using the module, see the examples in the `./examples/azure-cleanup` directory.

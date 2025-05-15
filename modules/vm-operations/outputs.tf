@@ -14,8 +14,8 @@ output "prepare_destroy_completed" {
 
 output "operation_summary" {
   value = {
-    vms_deallocated        = var.deallocate_vms
-    destruction_prepared   = var.prepare_destroy
-    last_operation_time    = timestamp()
+    vms_deallocated      = var.deallocate_vms
+    destruction_prepared = var.prepare_destroy
+    last_operation_time  = timestamp()
   }
 } 

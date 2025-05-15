@@ -21,18 +21,18 @@ environment = "development"
 project_name = "azure-test-project"
 
 # VM specs 
-vm_size = "Standard_B1s"
-disk_size_gb = 50
+vm_size        = "Standard_B1s"
+disk_size_gb   = 50
 admin_username = "adminuser"
 
 # Infrastructure Operations
-deallocate_vms = false
-prepare_destroy = false
+deallocate_vms         = false
+prepare_destroy        = false
 destroy_infrastructure = false
 
-# Azure Cleanup Module Settings - Enable execution
-scan_azure_resources = true
-plan_azure_cleanup = true
+# Azure Cleanup Module Settings
+scan_azure_resources  = true
+plan_azure_cleanup    = true
 execute_azure_cleanup = true
 confirm_each_deletion = false
 exclude_resource_groups = [
@@ -44,9 +44,9 @@ exclude_resource_groups = [
 
 # VM Configuration Settings
 vm_image_publisher = "Canonical"
-vm_image_offer = "0001-com-ubuntu-server-jammy"
-vm_image_sku = "22_04-lts-gen2"
-vm_image_version = "latest"
+vm_image_offer     = "0001-com-ubuntu-server-jammy"
+vm_image_sku       = "22_04-lts-gen2"
+vm_image_version   = "latest"
 
 # Azure Resource Settings
-resource_group_name = "web-resource-group" 
+resource_group_name = "web-resource-group"

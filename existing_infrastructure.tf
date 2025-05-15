@@ -254,7 +254,7 @@ resource "azurerm_bastion_host" "vpngermany_bastion" {
   ip_configuration {
     name                 = "configuration"
     subnet_id            = "${azurerm_virtual_network.vpsgermany_vnet.id}/subnets/AzureBastionSubnet" # Will be updated during import
-    public_ip_address_id = azurerm_public_ip.vpsgermany_public_ip.id # Will need to be updated to correct IP
+    public_ip_address_id = azurerm_public_ip.vpsgermany_public_ip.id                                  # Will need to be updated to correct IP
   }
 }
 
@@ -266,7 +266,7 @@ resource "azurerm_bastion_host" "web_bastion" {
   ip_configuration {
     name                 = "configuration"
     subnet_id            = "${azurerm_virtual_network.web_network.id}/subnets/AzureBastionSubnet" # Will be updated during import
-    public_ip_address_id = azurerm_public_ip.vpsgermany_public_ip.id # Will need to be updated to correct IP
+    public_ip_address_id = azurerm_public_ip.vpsgermany_public_ip.id                              # Will need to be updated to correct IP
   }
 }
 
@@ -278,6 +278,6 @@ resource "azurerm_bastion_host" "foodshare_bastion" {
   ip_configuration {
     name                 = "configuration"
     subnet_id            = "${azurerm_virtual_network.foodshare_network.id}/subnets/AzureBastionSubnet" # Will be updated during import
-    public_ip_address_id = azurerm_public_ip.vpsgermany_public_ip.id # Will need to be updated to correct IP
+    public_ip_address_id = azurerm_public_ip.vpsgermany_public_ip.id                                    # Will need to be updated to correct IP
   }
 } 
