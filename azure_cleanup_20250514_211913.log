@@ -1,0 +1,41 @@
+2025-05-14 21:19:13 - Starting Azure resource cleanup...
+2025-05-14 21:19:13 - Step 1: Removing resource locks...
+2025-05-14 21:19:13 - Skipping lock removal.
+2025-05-14 21:19:13 - Step 2: Cleaning up Recovery Services vaults...
+2025-05-14 21:19:13 - Skipping Recovery Services vault cleanup.
+2025-05-14 21:19:13 - Step 3: Stopping all VMs...
+2025-05-14 21:19:13 - Skipping VM deallocation.
+2025-05-14 21:19:13 - Step 4: Deleting resource groups...
+2025-05-14 21:19:13 - Skipping resource group deletion.
+2025-05-14 21:19:13 - Step 6: Verifying remaining resource groups...
+2025-05-14 21:19:14 - Remaining resource groups:
+Name                               Status
+---------------------------------  ---------
+cloud-shell-storage-westeurope     Succeeded
+vpswest_resource_group             Succeeded
+monitoring-resource-group-west-us  Succeeded
+newvps_resource_group              Succeeded
+xuigermany-rg                      Succeeded
+vpngermany_resource_group          Succeeded
+vpn_service-rg                     Succeeded
+vpsgermany-rg                      Succeeded
+NetworkWatcherRG                   Succeeded
+web-resource-group                 Succeeded
+AzureBackupRG_polandcentral_1      Succeeded
+foodshare-resource-group           Succeeded
+azure-test-rg                      Succeeded
+THE_LATEST_RESOURCE_GROUP          Succeeded
+2025-05-14 21:19:14 - Step 7: Final verification of resource cleanup...
+2025-05-14 21:19:14 - Remaining resources (excluding NetworkWatcher and cloud-shell-storage):
+Name                                                       Location            CreatedTime                       ChangedTime                       ProvisioningState    ResourceGroup
+---------------------------------------------------------  ------------------  --------------------------------  --------------------------------  -------------------  -----------------------------
+xuigermany-osdisk                                          germanywestcentral  2025-05-15T03:47:55.363043+00:00  2025-05-15T03:58:05.061384+00:00  Succeeded            XUIGERMANY-RG
+xuigermany-public-ip                                       germanywestcentral  2025-05-15T03:47:55.943725+00:00  2025-05-15T03:58:05.617394+00:00  Succeeded            xuigermany-rg
+xuigermany-vnet                                            germanywestcentral  2025-05-15T03:47:56.253337+00:00  2025-05-15T03:58:05.557374+00:00  Succeeded            xuigermany-rg
+AzureBackup_web-virtual-machine_7971723185939630122        polandcentral       2023-07-16T18:30:50.825701+00:00  2023-07-16T18:40:51.413473+00:00  Succeeded            AzureBackupRG_polandcentral_1
+AzureBackup_foodshare-virtual-machine_7971723185351554625  polandcentral       2023-07-16T18:35:03.162409+00:00  2023-07-16T18:45:03.432841+00:00  Succeeded            AzureBackupRG_polandcentral_1
+vault473                                                   polandcentral       2023-07-16T18:28:35.005992+00:00  2025-05-15T04:18:37.232999+00:00  Succeeded            WEB-RESOURCE-GROUP
+foodshare-network                                          polandcentral       2025-05-15T03:47:51.709708+00:00  2025-05-15T03:58:02.198256+00:00  Succeeded            foodshare-resource-group
+azure-test-vnet                                            polandcentral       2025-05-15T04:16:32.724223+00:00  2025-05-15T04:16:39.639824+00:00  Succeeded            azure-test-rg
+azure-test-public-ip                                       polandcentral       2025-05-15T04:16:34.421773+00:00  2025-05-15T04:16:41.728913+00:00  Succeeded            azure-test-rg
+2025-05-14 21:19:14 - Cleanup process completed. Check the log file for details: azure_cleanup_20250514_211913.log
